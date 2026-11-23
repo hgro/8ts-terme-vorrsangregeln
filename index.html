@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vorrangregeln üben</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* VOICE: freundlich, klar, wie ein gut geführtes Matheheft – für Klasse 8.
+   IDEA: ein Rechenheft auf Karopapier; Tinte für Aufgaben, Rotstift für Korrektur, Textmarker für „zuerst rechnen“.
+   PICTURE: die Aufgabenkarten selbst, groß gesetzte Terme; am Ende eine gezeichnete Urkunde mit Pokal/Medaille/Kranz/Ananas.
+   COLOUR and TYPE: Weißes Karopapier, Tintenblau, Rotstift, Textmarkergelb; Atkinson Hyperlegible.
+   LAYOUT: Kopf mit Name/Zeit/Punkten, Regelleiste, Reiter 1–7 + Urkunde, Kartenraster. */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#0e1726);--grid:light-dark(#dfe8f7,#1a2840);--card:light-dark(#ffffff,#15233a);--ink:light-dark(#18233f,#e6ecfa);
+--mute:light-dark(#56627f,#a4b0cc);--blue:light-dark(#1f3a93,#8fb0ff);--red:light-dark(#c62f2a,#ff8a80);--green:light-dark(#1d7a45,#6fd69a);
+--mark:light-dark(#ffe45c,#7a6a12);--line:light-dark(#c9d4ea,#2c3d5c);--soft:light-dark(#f2f6fd,#1b2b46)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;color:var(--ink);font:17px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip;
+background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.wrap{max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,40px) max(4vw,14px) 60px}
+h1{font-size:clamp(30px,4.4vw,46px);line-height:1.05;margin:0;color:var(--blue);text-wrap:balance}
+.sub{color:var(--mute);margin:6px 0 0}
+.top{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:end;justify-content:space-between}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pill{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:8px 14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill b{color:var(--blue)}
+input,select,button{font:inherit;font-size:17px;color:var(--ink)}
+input,select{min-height:44px;border:2px solid var(--line);border-radius:10px;background:var(--card);padding:6px 12px}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--mark);outline-offset:1px;border-color:var(--blue)}
+button{min-height:44px;border-radius:10px;border:2px solid var(--blue);background:var(--blue);color:light-dark(#fff,#0e1726);padding:6px 16px;cursor:pointer;font-weight:700}
+button.ghost{background:transparent;color:var(--blue)}
+button:disabled{opacity:.45;cursor:not-allowed}
+#name{width:220px}
+.rules{color:var(--mute);font-size:15px;margin:14px 0 0;max-width:80ch}
+.merk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}
+.merk div{background:var(--card);border:2px solid var(--blue);border-radius:12px;padding:12px 16px}
+.merk b{display:block;color:var(--blue);font-size:18px}
+.merk span{color:var(--mute);font-size:15px}
+.merk code{font:inherit;font-size:15px;color:var(--ink);background:var(--soft);padding:1px 6px;border-radius:5px;white-space:nowrap}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+nav button{background:var(--card);color:var(--ink);border:2px solid var(--line);font-weight:400;display:flex;gap:8px;align-items:center}
+nav button[aria-selected=true]{border-color:var(--blue);background:var(--blue);color:light-dark(#fff,#0e1726);font-weight:700}
+nav small{font-size:13px;opacity:.8;font-variant-numeric:tabular-nums}
+nav .full small{color:var(--green)}nav button[aria-selected=true] small{color:inherit}
+h2{font-size:26px;margin:0 0 4px;color:var(--blue)}
+.desc{margin:0 0 16px;color:var(--mute);max-width:75ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.card.ok{border-color:var(--green)}.card.sol{border-color:var(--red)}
+.lab{font-weight:700;color:var(--mute);display:flex;justify-content:space-between}
+.lab em{font-style:normal;font-size:14px;font-variant-numeric:tabular-nums}
+.ok .lab em{color:var(--green)}.sol .lab em{color:var(--red)}
+.term{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3}
+.who{color:var(--mute);font-size:15px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row input{flex:1 1 120px}.row select{flex:1 1 160px}
+.row label{font-size:15px;color:var(--mute);flex-basis:100%;margin-bottom:-4px}
+.fb{font-weight:700;min-height:0}.fb.good{color:var(--green)}.fb.bad{color:var(--red)}.fb.info{color:var(--mute);font-weight:400}
+.hints{display:flex;flex-wrap:wrap;gap:6px}
+.hints button{font-size:15px;min-height:38px;padding:4px 12px;background:transparent;color:var(--blue);border-width:1.5px}
+.hints button.solb{color:var(--red);border-color:var(--red)}
+.hint{background:var(--soft);border-left:4px solid var(--mark);border-radius:6px;padding:8px 12px;font-size:16px}
+.hint.s{border-left-color:var(--red)}
+.hint b{background:linear-gradient(transparent 55%,var(--mark) 55%)}
+.ch div{font-variant-numeric:tabular-nums}
+.kb{display:flex;gap:6px}.kb button{min-width:44px;font-size:20px;padding:0 10px}
+.cert{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;align-items:start}
+.cert svg{width:100%;height:auto;border:2px solid var(--line);border-radius:10px;background:#fffdf7}
+.side{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.bars div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:4px 0;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--mute)}
+@media(max-width:760px){.merk{grid-template-columns:1fr}.cert{grid-template-columns:1fr}#name{width:100%}.ctl{width:100%}}
+@media(prefers-reduced-motion:no-preference){.card.ok{animation:pop .35s ease}@keyframes pop{50%{transform:scale(1.02)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Vorrangregeln bei Termen</h1><p class="sub">Klammern · Punkt vor Strich · von links nach rechts</p></div>
+    <div class="ctl">
+      <input id="name" placeholder="Dein Name" aria-label="Dein Name" autocomplete="off">
+      <span class="pill">Zeit <b id="time">00:00</b></span>
+      <span class="pill">Punkte <b id="pts">0</b></span>
+      <button class="ghost" id="reset">Neue Aufgaben</button>
+    </div>
+  </div>
+  <p class="rules">Jede Aufgabe bringt 1 Punkt. Hilfe 1 wird nach 30 Sekunden freigeschaltet, Hilfe 2 und die Lösung jeweils 30 Sekunden nach der vorherigen Hilfe. Jede Hilfe kostet ¼ Punkt, die Lösung kostet den ganzen Punkt. Bei jedem Neuladen entstehen neue Aufgaben.</p>
+  <div class="merk">
+    <div><b>1. Klammern zuerst</b><span>Bei Klammern in Klammern von innen nach außen. <code>(3 + 5) · 2 = 16</code></span></div>
+    <div><b>2. Punkt vor Strich</b><span>· und : vor + und −. <code>3 + 5 · 2 = 13</code></span></div>
+    <div><b>3. Sonst von links nach rechts</b><span>Nur Strich- oder nur Punktrechnungen. <code>20 − 6 − 4 = 10</code></span></div>
+  </div>
+  <nav id="tabs" role="tablist"></nav>
+  <section id="panel"></section>
+</div>
+<script>
+{
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const rnd=v=>Math.round(v*1e9)/1e9;
+const fn=v=>(v<0?'−':'')+String(Math.abs(v)).replace('.',',');
+const fnp=v=>v<0?'('+fn(v)+')':fn(v);
+const norm=s=>String(s).replace(/\s+/g,'').replace(/[–-]/g,'−').replace(/[*×xX]/g,'·').replace(/[\/÷]/g,':');
+
+function tok(s){
+  s=norm(s);const out=[];let i=0;
+  const num=j=>{let k=j;while(k<s.length&&/[0-9,.]/.test(s[k]))k++;if(k===j)return null;const t=s.slice(j,k).replace(',','.');if(!/^\d+(\.\d+)?$/.test(t))return null;return [parseFloat(t),k]};
+  while(i<s.length){const c=s[i];
+    if(/[0-9]/.test(c)){const r=num(i);if(!r)return null;out.push({t:'n',v:r[0]});i=r[1];continue}
+    if(c==='('||c==='['){out.push({t:'(',c});i++;continue}
+    if(c===')'||c===']'){out.push({t:')',c});i++;continue}
+    if('+−·:'.includes(c)){const p=out[out.length-1];
+      if(c==='−'&&(!p||p.t==='('||p.t==='o')){const r=num(i+1);if(!r)return null;out.push({t:'n',v:-r[0]});i=r[1];continue}
+      out.push({t:'o',v:c});i++;continue}
+    return null}
+  if(!valid(out))return null;
+  return collapse(out)}
+function valid(a){let exp=true;const st=[];for(const x of a){if(exp){if(x.t==='n')exp=false;else if(x.t==='(')st.push(x.c);else return false}else{if(x.t==='o')exp=true;else if(x.t===')'){const o=st.pop();if(!o||(o==='('?')':']')!==x.c)return false}else return false}}return a.length>0&&!exp&&st.length===0}
+function collapse(a){let ch=true;while(ch){ch=false;for(let i=0;i+2<a.length;i++){if(a[i].t==='('&&a[i+1].t==='n'&&a[i+2].t===')'){a=[...a.slice(0,i),a[i+1],...a.slice(i+3)];ch=true;break}}}return a}
+function flat(seg){const ops=[];seg.forEach((x,i)=>{if(x.t==='o')ops.push(i)});if(!ops.length)return null;
+  const P=ops.filter(i=>seg[i].v==='·'||seg[i].v===':');const hasS=P.length<ops.length;
+  const i=P.length?P[0]:ops[0];const a=seg[i-1].v,b=seg[i+1].v,op=seg[i].v;let v;
+  if(op==='+')v=a+b;else if(op==='−')v=a-b;else if(op==='·')v=a*b;else{if(b===0)return null;v=a/b}
+  v=rnd(v);const rule=P.length&&hasS?'P':ops.length>1?'L':'E';
+  return {arr:[...seg.slice(0,i-1),{t:'n',v},...seg.slice(i+2)],a,b,op,v,rule}}
+function step(arr){let open=-1;
+  for(let i=0;i<arr.length;i++){if(arr[i].t==='(')open=i;else if(arr[i].t===')'){const r=flat(arr.slice(open+1,i));if(!r)return null;
+    const res=r.arr.length===1?[...arr.slice(0,open),r.arr[0],...arr.slice(i+1)]:[...arr.slice(0,open+1),...r.arr,...arr.slice(i)];
+    return {...r,arr:collapse(res),inBr:true}}}
+  const r=flat(arr);if(!r)return null;return {...r,inBr:false}}
+function fmt(a){return a.map((x,i)=>{if(x.t==='n'){const p=a[i-1];return x.v<0&&p&&p.t==='o'?'('+fn(x.v)+')':fn(x.v)}if(x.t==='o')return ' '+x.v+' ';return x.c}).join('')}
+function chain(s){let a=tok(s);if(!a)return null;const steps=[];let g=0;while(a.length>1){const st=step(a);if(!st)return null;steps.push(st);a=st.arr;if(++g>60)return null}return {start:s,steps,value:a[0].v}}
+const stepText=s=>`${fn(s.a)} ${s.op} ${fnp(s.b)}`;
+function ruleText(s){const inner=s.rule==='P'?'Punkt vor Strich':s.rule==='L'?'von links nach rechts':'';
+  if(s.inBr)return 'Klammern zuerst'+(inner?' – und in der Klammer gilt: '+inner:'')+'.';
+  return s.rule==='E'?'Es ist nur noch eine Rechnung übrig.':inner[0].toUpperCase()+inner.slice(1)+'.'}
+function primaryRule(s){const a=tok(s);if(a.some(x=>x.t==='('))return 'K';const ops=a.filter(x=>x.t==='o').map(x=>x.v);const p=ops.some(o=>o==='·'||o===':'),st=ops.some(o=>o==='+'||o==='−');return p&&st?'P':'L'}
+function pairs(s){const a=tok(s),out=[];a.forEach((x,i)=>{if(x.t!=='o')return;let l=i-1;while(a[l].t!=='n')l--;let r=i+1;while(a[r].t!=='n')r++;const t=`${fn(a[l].v)} ${x.v} ${fnp(a[r].v)}`;if(!out.includes(t))out.push(t)});return out}
+function ok(c,o={}){if(!c)return false;for(const s of c.steps){if(!o.dec&&!Number.isInteger(s.v))return false;if(!o.neg&&s.v<0)return false;if(Math.abs(s.v)>999)return false}return true}
+function make(tpl,o={}){for(let k=0;k<800;k++){const t=tpl();const c=chain(t);if(ok(c,o)&&(!o.test||o.test(c,t)))return {term:t,c}}throw new Error('gen '+tpl)}
+
+const A1G={
+  K:[()=>`(${R(2,15)} + ${R(2,15)}) · ${R(2,9)}`,()=>`${R(30,60)} − (${R(2,12)} + ${R(2,12)})`,()=>{const b=R(8,15);return `${R(2,9)} · (${b} − ${R(2,b-1)})`}],
+  P:[()=>`${R(2,30)} + ${R(2,9)} · ${R(2,9)}`,()=>{const c=R(2,9);return `${R(20,60)} − ${c*R(2,9)} : ${c}`},()=>{const b=R(2,9);return `${b*R(2,9)} : ${b} + ${R(2,9)} · ${R(2,9)}`}],
+  L:[()=>`${R(30,60)} − ${R(2,12)} − ${R(2,12)}`,()=>{const b=R(2,9);return `${b*R(2,9)} : ${b} · ${R(2,9)}`},()=>`${R(5,30)} + ${R(2,20)} − ${R(2,9)}`]};
+const A2=[
+  [()=>{const a=R(15,40);return `${a} − ${R(2,a-3)} + ${R(2,20)}`}],
+  [()=>{const b=R(2,5),c=R(2,5);return `${b*c*R(2,6)} : ${b} : ${c}`}],
+  [()=>{const c=R(2,6);return `${c*R(1,4)} · ${R(2,9)} : ${c}`}],
+  [()=>`${R(40,90)} − ${R(5,20)} − ${R(5,20)}`],
+  [()=>{const b=R(2,9);return `${b*R(2,9)} : ${b} · ${R(2,6)}`}],
+  [()=>`${R(10,30)} + ${R(5,15)} − ${R(5,20)} + ${R(2,9)}`],
+  [()=>{const b=R(2,6),d=R(2,4);return `${b*R(2,5)} : ${b} · ${d*R(1,3)} : ${d}`}],
+  [()=>{const a=R(3,12),b=a+R(2,10);return `${a} − ${b} + ${b-a+R(1,10)}`},{neg:true}]];
+const A3=[
+  [()=>`${R(2,30)} + ${R(2,9)} · ${R(2,9)}`],
+  [()=>{const c=R(2,9),q=R(2,9);return `${q+R(3,40)} − ${c*q} : ${c}`}],
+  [()=>`${R(4,9)} · ${R(4,9)} − ${R(2,5)} · ${R(2,5)}`],
+  [()=>{const b=R(2,9);return `${b*R(2,9)} : ${b} + ${R(2,9)} · ${R(2,9)}`}],
+  [()=>`${R(2,20)} + ${R(2,9)} · ${R(2,9)} − ${R(2,15)}`],
+  [()=>{const d=R(2,5),k=R(2,5);return `${R(30,80)} − ${d*k} · ${R(2,6)} : ${d}`}],
+  [()=>`${R(0,4)},5 + ${R(1,4)},5 · ${pick([2,4,6])}`,{dec:true}],
+  [()=>{const c=R(2,6);return `${R(2,9)} · (−${R(2,9)}) + ${c*R(2,9)} : ${c}`},{neg:true}]];
+const A4=[
+  [()=>`(${R(2,15)} + ${R(2,15)}) · ${R(2,9)}`],
+  [()=>{const b=R(6,15);return `${R(2,9)} · (${b} − ${R(2,b-1)})`}],
+  [()=>{const c=R(2,5),d=R(1,5),y=R(2,15);return `(${y+(c+d)*R(2,6)} − ${y}) : (${c} + ${d})`}],
+  [()=>`${R(40,90)} − (${R(5,20)} + ${R(5,20)})`],
+  [()=>`${R(2,5)} · (${R(2,9)} + ${R(2,6)} · ${R(2,6)})`],
+  [()=>{const b=R(2,5),c=R(2,5);return `(${b*c+R(1,10)} − ${b} · ${c}) · ${R(2,9)}`}],
+  [()=>{const c=R(2,6),d=R(2,6);return `${R(2,5)} · [${c+d+R(1,12)} − (${c} + ${d})]`}],
+  [()=>{const c=R(2,8),df=R(2,6),d=R(2,4);return `${df*d*R(2,5)} : (${c+df} − ${c}) : ${d}`}]];
+const A5=[
+  [()=>{const c=R(2,9);return `${R(3,9)} · ${R(3,9)} − ${c*R(2,9)} : ${c} + ${R(2,15)}`}],
+  [()=>{const d=R(2,6),b=R(2,10);return `(${b+R(2,9)} − ${b}) · ${R(2,6)} − ${d*R(2,6)} : ${d}`}],
+  [()=>{const e=R(2,5),k=R(1,4),c=R(2,8),d=R(2,8);return `${k*(c+d)+R(5,40)} − ${e*k} · (${c} + ${d}) : ${e}`}],
+  [()=>{const d=R(2,4),e=R(2,4);return `${R(2,15)} + ${R(2,6)} · (${d*e+R(1,6)} − ${d} · ${e}) − ${R(1,9)}`}],
+  [()=>{const d=R(2,6);return `(−${R(2,9)}) · ${R(2,9)} + ${d*R(2,9)} : (−${d})`},{neg:true}],
+  [()=>{const e=R(2,5),d=R(1,5);return `${R(1,4)},5 · ${pick([2,4,6])} − (${d+e*R(1,4)},5 − ${d},5) : ${e}`},{dec:true}]];
+const A7=[
+  ()=>`(${R(2,9)} + ${R(2,9)}) · ${R(2,9)}`,
+  ()=>{const b=R(8,20);return `${R(25,50)} − (${b} − ${R(2,b-2)})`},
+  ()=>{const b=R(2,4),c=R(2,4);return `${b*c*R(2,5)} : (${b} · ${c})`},
+  ()=>{const b=R(1,6),c=R(1,6);return `${(b+c)*R(2,6)} : (${b} + ${c})`},
+  ()=>`${R(2,4)} · (${R(2,6)} + ${R(2,6)}) · ${R(2,5)}`,
+  ()=>{const d=R(1,4);return `(${R(2,9)} + ${R(2,9)}) · (${d+R(1,5)} − ${d})`}];
+const NAMES=['Lena','Tom','Mia','Ali','Emma','Noah','Lina','Ben','Sara','Elias','Jonas','Leyla','Finn','Zeynep'];
+const RULES={K:'Klammern zuerst',P:'Punkt vor Strich',L:'von links nach rechts'};
+
+function numItem(tab,[tpl,o]){const g=make(tpl,o||{});return {tab,kind:'num',term:g.term,c:g.c,ans:g.c.value}}
+function buildSet(){const it=[];
+  const a1=shuffle([...shuffle(A1G.K).slice(0,2),...shuffle(A1G.P).slice(0,2),...shuffle(A1G.L).slice(0,2)]);
+  a1.forEach(t=>{const g=make(t);const s0=g.c.steps[0];it.push({tab:0,kind:'first',term:g.term,c:g.c,opts:shuffle(pairs(g.term)),first:stepText(s0),rule:primaryRule(g.term)})});
+  A2.forEach(x=>it.push(numItem(1,x)));A3.forEach(x=>it.push(numItem(2,x)));A4.forEach(x=>it.push(numItem(3,x)));A5.forEach(x=>it.push(numItem(4,x)));
+  const names=shuffle(NAMES);
+  const errs=shuffle([
+    ()=>{const a=R(2,12),b=R(2,9),c=R(2,9);return {term:`${a} + ${b} · ${c}`,wrong:`${a+b} · ${c} = ${(a+b)*c}`,wf:`${a} + ${b}`,rule:'P'}},
+    ()=>{const b=R(2,5),c=R(2,5),x=b*c*R(2,5);return {term:`${x} : ${b} · ${c}`,wrong:`${x} : ${b*c} = ${x/(b*c)}`,wf:`${b} · ${c}`,rule:'L'}},
+    ()=>{const a=R(30,60),b=R(8,20),c=R(2,b-2);return {term:`${a} − ${b} − ${c}`,wrong:`${a} − ${b-c} = ${a-b+c}`,wf:`${b} − ${c}`,rule:'L'}},
+    ()=>{const a=R(2,9),b=R(2,9),c=R(2,9);return {term:`${a} · (${b} + ${c})`,wrong:`${a*b} + ${c} = ${a*b+c}`,wf:`${a} · ${b}`,rule:'K'}}]);
+  errs.forEach((f,i)=>{const e=f();const c=chain(e.term);it.push({tab:5,kind:'err',who:names[i],...e,c,ans:c.value,first:stepText(c.steps[0])})});
+  A7.forEach(t=>{for(let k=0;k<800;k++){const b=t();const plain=b.replace(/[()\[\]]/g,'');const c=chain(b),cp=chain(plain);
+    if(!ok(c)||!cp||Math.abs(cp.value-c.value)<1e-9)continue;
+    const m=b.match(/[(\[]\s*(\d+)/);it.push({tab:6,kind:'br',br:b,plain,target:c.value,plainVal:cp.value,c,pairsN:(b.match(/\(/g)||[]).length,startNum:m?m[1]:'',val:plain});break}});
+  for(let k=0;k<800;k++){const a=R(2,6),b=2*R(1,5),c=2*R(2,6);
+    const vs=[`${a} · ${b} + ${c} : 2`,`(${a} · ${b} + ${c}) : 2`,`${a} · (${b} + ${c}) : 2`,`${a} · (${b} + ${c} : 2)`].map(t=>({t,c:chain(t)}));
+    if(!vs.every(v=>ok(v.c)))continue;const vals=vs.map(v=>v.c.value);if(new Set(vals).size<4)continue;
+    it.push({tab:6,kind:'knob',term:vs[0].t,vs,max:Math.max(...vals),min:Math.min(...vals)});break}
+  it.forEach((x,i)=>{x.id=i;x.h=0;x.wrong=0});return it}
+
+if(typeof module!=='undefined')module.exports={buildSet,chain,tok,fmt,norm,stepText,ruleText,fn};
+
+const TABS=[
+ {t:'Was rechnest du zuerst?',d:'Wähle aus, welchen Rechenschritt du zuerst ausführst und welche Regel gilt. Du musst den Term noch nicht ausrechnen.'},
+ {t:'Von links nach rechts',d:'Berechne. Achte darauf, streng von links nach rechts zu rechnen.'},
+ {t:'Punkt vor Strich',d:'Berechne. Schreibe die Zwischenschritte auf einem Zettel mit.'},
+ {t:'Klammern zuerst',d:'Berechne. Bei eckigen Klammern rechnest du zuerst die innere runde Klammer.'},
+ {t:'Alle Regeln gemischt',d:'Berechne Schritt für Schritt. Negative Ergebnisse schreibst du mit Minuszeichen, Kommazahlen mit Komma.'},
+ {t:'Finde den Fehler',d:'Hier haben Kinder falsch gerechnet. Wähle die Regel, die nicht beachtet wurde, und gib das richtige Ergebnis an.'},
+ {t:'Setze Klammern',d:'Setze Klammern so, dass die Gleichung stimmt. Die Zahlen und Rechenzeichen bleiben, du fügst nur Klammern ein. Manchmal brauchst du zwei Klammerpaare.'},
+ {t:'Urkunde',d:''}];
+const LET='abcdefghijklmnop';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $=id=>document.getElementById(id);
+let S;let DL=null;let armed=0;
+function fresh(){S={items:buildSet(),start:Date.now(),end:null,tab:0};render()}
+try{const n=localStorage.getItem('vr-name');if(n)$('name').value=n}catch(e){}
+$('name').addEventListener('input',e=>{try{localStorage.setItem('vr-name',e.target.value)}catch(_){};if(S.tab===7)renderPanel()});
+$('reset').addEventListener('click',()=>{if(Date.now()-armed<4000){armed=0;$('reset').textContent='Neue Aufgaben';fresh()}else{armed=Date.now();$('reset').textContent='Sicher? Nochmal klicken';setTimeout(()=>{if(armed&&Date.now()-armed>=4000)$('reset').textContent='Neue Aufgaben'},4100)}});
+const pts=it=>it.ok?1-0.25*it.hb:0;
+const total=()=>S.items.reduce((a,it)=>a+pts(it),0);
+const fnum=v=>String(Math.round(v*100)/100).replace('.',',');
+const mmss=ms=>{const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+String(m).padStart(2,'0'):String(m).padStart(2,'0'))+':'+String(x).padStart(2,'0')};
+function parseNum(s){const t=String(s).trim().replace(/\s+/g,'').replace(/[−–]/g,'-').replace(',','.');return /^-?\d+(\.\d+)?$/.test(t)?parseFloat(t):NaN}
+const chainHTML=c=>`<div class="ch"><div>${esc(c.start)}</div>${c.steps.map(s=>`<div>= ${esc(fmt(s.arr))}</div>`).join('')}</div>`;
+
+function renderTabs(){$('tabs').innerHTML=TABS.map((t,i)=>{const its=S.items.filter(x=>x.tab===i);const d=its.filter(x=>x.done).length;
+  return `<button role="tab" aria-selected="${i===S.tab}" data-tab="${i}" class="${its.length&&d===its.length?'full':''}">${i<7?i+1+'. ':''}${t.t}${its.length?` <small>${d}/${its.length}</small>`:''}</button>`}).join('')}
+function render(){renderTabs();renderPanel();head()}
+function head(){$('pts').textContent=fnum(total())+' / '+S.items.length;$('time').textContent=mmss((S.end||Date.now())-S.start)}
+function renderPanel(){const t=TABS[S.tab];
+  if(S.tab===7){$('panel').innerHTML=certPanel();return}
+  const its=S.items.filter(x=>x.tab===S.tab);const now=Date.now();its.forEach(x=>{if(!x.shown)x.shown=now});
+  $('panel').innerHTML=`<h2>Aufgabe ${S.tab+1}: ${t.t}</h2><p class="desc">${t.d}</p><div class="grid">${its.map((x,i)=>card(x,i)).join('')}</div>`;tick()}
+function body(it){const dis=it.done?'disabled':'';
+  if(it.kind==='num')return `<div class="term">${esc(it.term)} =</div><div class="row"><input id="i${it.id}" value="${esc(it.val||'')}" ${dis} autocomplete="off" aria-label="Ergebnis"><button data-check="${it.id}" ${dis}>Prüfen</button></div>`;
+  if(it.kind==='first')return `<div class="term">${esc(it.term)}</div><div class="row"><label for="i${it.id}">Das rechne ich zuerst</label><select id="i${it.id}" ${dis}><option value="">bitte wählen</option>${it.opts.map(o=>`<option ${it.val===o?'selected':''}>${esc(o)}</option>`).join('')}</select></div>
+   <div class="row"><label for="r${it.id}">Welche Regel gilt?</label><select id="r${it.id}" ${dis}><option value="">bitte wählen</option>${Object.entries(RULES).map(([k,v])=>`<option value="${k}" ${it.rv===k?'selected':''}>${v}</option>`).join('')}</select><button data-check="${it.id}" ${dis}>Prüfen</button></div>`;
+  if(it.kind==='err')return `<div class="who">${esc(it.who)} rechnet:</div><div class="term">${esc(it.term)} = ${esc(it.wrong)}</div><div class="row"><label for="r${it.id}">Welche Regel wurde nicht beachtet?</label><select id="r${it.id}" ${dis}><option value="">bitte wählen</option>${Object.entries(RULES).map(([k,v])=>`<option value="${k}" ${it.rv===k?'selected':''}>${v}</option>`).join('')}</select></div>
+   <div class="row"><label for="i${it.id}">Richtiges Ergebnis</label><input id="i${it.id}" value="${esc(it.val||'')}" ${dis} autocomplete="off"><button data-check="${it.id}" ${dis}>Prüfen</button></div>`;
+  if(it.kind==='br')return `<div class="term">${esc(it.plain)} = ${fn(it.target)}</div><div class="row"><label for="i${it.id}">Dein Term mit Klammern</label><input id="i${it.id}" value="${esc(it.val)}" ${dis} autocomplete="off" spellcheck="false"></div>
+   <div class="row"><span class="kb"><button class="ghost" data-ins="(" data-for="${it.id}" ${dis} aria-label="runde Klammer auf">(</button><button class="ghost" data-ins=")" data-for="${it.id}" ${dis} aria-label="runde Klammer zu">)</button><button class="ghost" data-undo="${it.id}" ${dis} aria-label="Klammern entfernen">↺</button></span><button data-check="${it.id}" ${dis}>Prüfen</button></div>`;
+  return `<div class="who">Knobelaufgabe</div><div class="term">${esc(it.term)}</div><p style="margin:0">Setze die Klammern auf verschiedene Arten. Welches Ergebnis ist das größte, welches das kleinste?</p>
+   <div class="row"><label for="i${it.id}">Größtes Ergebnis</label><input id="i${it.id}" value="${esc(it.val||'')}" ${dis} autocomplete="off"></div>
+   <div class="row"><label for="m${it.id}">Kleinstes Ergebnis</label><input id="m${it.id}" value="${esc(it.val2||'')}" ${dis} autocomplete="off"><button data-check="${it.id}" ${dis}>Prüfen</button></div>`}
+function card(it,i){const lab=it.kind==='knob'?'★':LET[i]+')';
+  const st=it.ok?'ok':it.sol?'sol':'';const em=it.ok?`+${fnum(pts(it))} ${pts(it)===1?"Punkt":"Punkte"}`:it.sol?'0 Punkte':'';
+  return `<div class="card ${st}" id="c${it.id}"><div class="lab"><span>${lab}</span><em>${em}</em></div>${body(it)}
+  <div class="fb ${it.fb?it.fb[0]:''}" aria-live="polite">${it.fb?it.fb[1]:''}</div>${hintsHTML(it)}</div>`}
+function hintTexts(it){const c=it.c;
+  if(it.kind==='num'){const s0=c.steps[0],s1=c.steps[1];
+    return [`${ruleText(s0)} Rechne zuerst <b>${esc(stepText(s0))}</b>.`,
+      `<div class="ch"><div>${esc(it.term)}</div><div>= ${esc(fmt(s0.arr))}</div>${s1?`<div>= ${esc(fmt(s1.arr))}</div>`:''}${c.steps.length>2?'<div>= …</div>':''}</div>`,
+      chainHTML(c)]}
+  if(it.kind==='first')return ['Gehe die Regeln der Reihe nach durch: Gibt es eine Klammer? Gibt es Punkt- <i>und</i> Strichrechnungen? Sonst gilt: von links nach rechts.',
+      {K:'Im Term steht eine Klammer.',P:'Im Term kommen Punkt- und Strichrechnungen vor.',L:'Im Term kommen nur Strichrechnungen oder nur Punktrechnungen vor.'}[it.rule],
+      `Zuerst: <b>${esc(it.first)}</b> – Regel: ${RULES[it.rule]}.`];
+  if(it.kind==='err')return [`Rechne den Term selbst Schritt für Schritt und vergleiche mit dem ersten Schritt von ${esc(it.who)}.`,
+      `${esc(it.who)} hat zuerst <b>${esc(it.wf)}</b> gerechnet. Richtig ist zuerst <b>${esc(it.first)}</b>.`,
+      `Nicht beachtet: <b>${RULES[it.rule]}</b>.${chainHTML(c)}`];
+  if(it.kind==='br'){const p=Number.isInteger(it.plainVal)?` Ohne Klammern ergibt der Term ${fn(it.plainVal)}.`:'';
+    return [`Überlege, welche Rechnung zuerst passieren muss, damit ${fn(it.target)} herauskommt.${p}`,
+      `Du brauchst ${it.pairsN===1?'ein Klammerpaar':it.pairsN+' Klammerpaare'}. Eine Klammer beginnt direkt vor der Zahl <b>${it.startNum}</b>.`,
+      `<div class="ch"><div>${esc(it.br)}</div>${it.c.steps.map(s=>`<div>= ${esc(fmt(s.arr))}</div>`).join('')}</div>`]}
+  return [`Ohne Klammern ergibt der Term ${fn(it.vs[0].c.value)}. Es gibt drei weitere Möglichkeiten, eine Klammer zu setzen, die etwas verändert.`,
+    `Probiere diese Terme aus: ${it.vs.slice(1).map(v=>`<b>${esc(v.t)}</b>`).join(', ')}.`,
+    it.vs.map(v=>`<div>${esc(v.t)} = ${fn(v.c.value)}</div>`).join('')+`<div>Größtes Ergebnis: <b>${fn(it.max)}</b>, kleinstes: <b>${fn(it.min)}</b>.</div>`]}
+function hintsHTML(it){const T=hintTexts(it);let h='';
+  if(it.h>=1)h+=`<div class="hint">Hilfe 1: ${T[0]}</div>`;if(it.h>=2)h+=`<div class="hint">Hilfe 2: ${T[1]}</div>`;
+  if(it.sol||it.free)h+=`<div class="hint s">Lösung: ${T[2]}</div>`;
+  let b='';if(it.ok&&!it.free&&!it.sol)b=`<button data-free="${it.id}">Lösungsweg ansehen</button>`;
+  else if(!it.done){const nx=it.h===0?'Hilfe 1':it.h===1?'Hilfe 2':'Lösung';b=`<button data-hint="${it.id}" class="${it.h===2?'solb':''}" disabled>${nx}<span data-cd="${it.id}"></span></button>`}
+  return h+(b?`<div class="hints">${b}</div>`:'')}
+const unlockAt=it=>(it.h===0?it.shown:it.h===1?it.t1:it.t2)+30000;
+function tick(){head();document.querySelectorAll('[data-hint]').forEach(b=>{const it=S.items[+b.dataset.hint];const r=Math.ceil((unlockAt(it)-Date.now())/1000);
+  b.disabled=r>0;b.querySelector('span').textContent=r>0?` (in ${r} s)`:''})}
+setInterval(tick,500);
+function upd(it){const el=$('c'+it.id);if(!el)return;const i=S.items.filter(x=>x.tab===it.tab).indexOf(it);el.outerHTML=card(it,i);renderTabs();
+  if(!S.end&&S.items.every(x=>x.done))S.end=Date.now();tick()}
+function save(it){const a=$('i'+it.id),r=$('r'+it.id),m=$('m'+it.id);if(a)it.val=a.value;if(r)it.rv=r.value;if(m)it.val2=m.value}
+function check(it){save(it);let good=false,msg='';
+  if(it.kind==='num'){const x=parseNum(it.val);if(isNaN(x))msg='Bitte gib eine Zahl ein, zum Beispiel 12, −5 oder 2,5.';else good=Math.abs(x-it.ans)<1e-6}
+  else if(it.kind==='first'){if(!it.val||!it.rv)msg='Bitte wähle beides aus.';else{const a=it.val===it.first,b=it.rv===it.rule;good=a&&b;if(!good)msg=a?'Der Rechenschritt stimmt, die Regel noch nicht.':b?'Die Regel stimmt, aber du rechnest zuerst etwas anderes.':''}}
+  else if(it.kind==='err'){const x=parseNum(it.val);if(!it.rv||isNaN(x))msg='Wähle die Regel und gib eine Zahl ein.';else{const a=it.rv===it.rule,b=Math.abs(x-it.ans)<1e-6;good=a&&b;if(!good)msg=a?'Die Regel stimmt, das Ergebnis noch nicht.':b?'Das Ergebnis stimmt, die Regel noch nicht.':''}}
+  else if(it.kind==='br'){const s=norm(it.val);if(s.replace(/[()\[\]]/g,'')!==norm(it.plain))msg='Du darfst nur Klammern einfügen. Die Zahlen und Rechenzeichen bleiben gleich.';
+    else{const c=chain(it.val);if(!c)msg='Die Klammern passen nicht zusammen. Zu jeder „(“ gehört eine „)“.';else{good=Math.abs(c.value-it.target)<1e-6;if(!good)msg=`Dein Term ergibt ${fn(c.value)}, nicht ${fn(it.target)}.`}}}
+  else{const x=parseNum(it.val),y=parseNum(it.val2);if(isNaN(x)||isNaN(y))msg='Gib beide Ergebnisse als Zahl ein.';else{const a=Math.abs(x-it.max)<1e-6,b=Math.abs(y-it.min)<1e-6;good=a&&b;if(!good)msg=a?'Das größte Ergebnis stimmt, das kleinste noch nicht.':b?'Das kleinste Ergebnis stimmt, das größte noch nicht.':''}}
+  if(good){it.ok=true;it.done=true;it.hb=it.h;it.fb=['good','Richtig!']}
+  else if(msg&&/^(Bitte|Wähle|Gib|Du darfst|Die Klammern)/.test(msg))it.fb=['info',msg];
+  else{it.wrong++;it.fb=['bad',(msg?msg+' ':'Leider falsch. ')+'Versuche es noch einmal.']}
+  upd(it)}
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;S.tab=+b.dataset.tab;render()});
+$('panel').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.check)return check(S.items[+t.dataset.check]);
+  if(t.dataset.hint){const it=S.items[+t.dataset.hint];if(Date.now()<unlockAt(it))return;save(it);
+    if(it.h===0){it.h=1;it.t1=Date.now()}else if(it.h===1){it.h=2;it.t2=Date.now()}else{it.sol=true;it.done=true;it.fb=['bad','Lösung angesehen – diese Aufgabe gibt keinen Punkt.']}return upd(it)}
+  if(t.dataset.free){const it=S.items[+t.dataset.free];it.free=true;return upd(it)}
+  if(t.dataset.ins){const inp=$('i'+t.dataset.for);const a=inp.selectionStart??inp.value.length,b=inp.selectionEnd??a;inp.value=inp.value.slice(0,a)+t.dataset.ins+inp.value.slice(b);inp.focus();inp.setSelectionRange(a+1,a+1);S.items[+t.dataset.for].val=inp.value;return}
+  if(t.dataset.undo){const it=S.items[+t.dataset.undo];it.val=it.plain;$('i'+it.id).value=it.plain;return}
+  if(t.id==='pdf')return savePDF()});
+$('panel').addEventListener('keydown',e=>{if(e.key!=='Enter')return;const m=e.target.id&&e.target.id.match(/^[irm](\d+)$/);if(m){e.preventDefault();check(S.items[+m[1]])}});
+$('panel').addEventListener('input',e=>{const m=e.target.id&&e.target.id.match(/^[irm](\d+)$/);if(m)save(S.items[+m[1]])});
+
+function level(p){return p>=90?{k:'cup',t:'sehr gut',c:'#b8860b'}:p>=75?{k:'medal',t:'gut',c:'#1f3a93'}:p>=50?{k:'wreath',t:'zufriedenstellend',c:'#4d7a22'}:{k:'pine',t:'Weiter üben!',c:'#c47a00'}}
+function icon(k){
+  if(k==='cup')return `<path d="M-60 -78 C-110 -78 -110 -10 -52 -6" fill="none" stroke="#b8860b" stroke-width="10"/><path d="M60 -78 C110 -78 110 -10 52 -6" fill="none" stroke="#b8860b" stroke-width="10"/>
+   <path d="M-62 -90 H62 V-30 C62 20 30 42 0 42 C-30 42 -62 20 -62 -30 Z" fill="#f2c230" stroke="#a87a06" stroke-width="4"/><path d="M-40 -80 V-30 C-40 0 -25 18 -12 26" fill="none" stroke="#fff3b0" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+   <rect x="-11" y="42" width="22" height="30" fill="#d9a514"/><rect x="-44" y="72" width="88" height="22" rx="5" fill="#7a4a24"/><rect x="-26" y="78" width="52" height="10" rx="2" fill="#e8c06a"/>
+   <polygon points="${star(0,-38,22,9)}" fill="#fff6c8"/>`;
+  if(k==='medal')return `<path d="M-48 -100 H-14 L14 -30 H-20 Z" fill="#c62f2a"/><path d="M48 -100 H14 L-14 -30 H20 Z" fill="#1f3a93"/>
+   <circle cx="0" cy="22" r="60" fill="#f2c230" stroke="#a87a06" stroke-width="5"/><circle cx="0" cy="22" r="44" fill="none" stroke="#a87a06" stroke-width="2.5"/><polygon points="${star(0,22,30,12)}" fill="#fff3b0" stroke="#a87a06" stroke-width="2"/>`;
+  if(k==='wreath'){const r=78,P=d=>{const a=d*Math.PI/180;return [r*Math.cos(a),r*Math.sin(a)]};const p0=P(100),p1=P(258);
+    let s=`<path d="M${p0[0].toFixed(1)} ${p0[1].toFixed(1)} A${r} ${r} 0 0 1 ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}" fill="none" stroke="#5c4a1e" stroke-width="4"/>`;
+    for(let i=0;i<10;i++){const d=108+i*15;for(const off of [-13,13]){const rr=r+off,a=d*Math.PI/180,x=(rr*Math.cos(a)).toFixed(1),y=(rr*Math.sin(a)).toFixed(1);
+      s+=`<ellipse cx="${x}" cy="${y}" rx="15" ry="6.5" transform="rotate(${d+90+(off<0?-30:30)} ${x} ${y})" fill="${off<0?'#6f9a35':'#4d7a22'}"/>`}}
+    return `<g>${s}</g><g transform="scale(-1 1)">${s}</g><path d="M-12 80 Q0 66 12 80" fill="none" stroke="#c62f2a" stroke-width="6"/>`}
+  return `<defs><clipPath id="pc"><ellipse cx="0" cy="28" rx="50" ry="64"/></clipPath></defs>
+   <path d="M0 -36 C-14 -70 -40 -92 -58 -96 C-40 -70 -26 -54 -12 -36Z M0 -36 C14 -70 40 -92 58 -96 C40 -70 26 -54 12 -36Z M0 -36 C-8 -80 -2 -104 0 -112 C4 -100 8 -78 6 -36Z" fill="#3f8a3a"/>
+   <ellipse cx="0" cy="28" rx="50" ry="64" fill="#f0b330" stroke="#a8700a" stroke-width="4"/>
+   <g clip-path="url(#pc)" stroke="#a8700a" stroke-width="3">${[-90,-60,-30,0,30,60,90].map(o=>`<line x1="${o-70}" y1="-40" x2="${o+70}" y2="100"/><line x1="${o+70}" y1="-40" x2="${o-70}" y2="100"/>`).join('')}</g>`}
+function star(cx,cy,R1,R2){const p=[];for(let i=0;i<10;i++){const r=i%2?R2:R1,a=-Math.PI/2+i*Math.PI/5;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1))}return p.join(' ')}
+function stats(){const its=S.items,n=its.length,p=total(),pc=Math.round(p/n*100);
+  return {n,p,pc,ok:its.filter(x=>x.ok).length,done:its.filter(x=>x.done).length,h:its.reduce((a,x)=>a+x.h,0),sol:its.filter(x=>x.sol).length,time:mmss((S.end||Date.now())-S.start),name:$('name').value.trim(),lv:level(pc)}}
+function certSVG(d){const rows=[['Punkte',`${fnum(d.p)} von ${d.n} (${d.pc} %)`],['Richtig gelöste Aufgaben',`${d.ok} von ${d.n}`],['Genutzte Hilfen',d.h],['Angesehene Lösungen',d.sol],['Bearbeitungszeit',d.time]];
+  const date=new Date().toLocaleDateString('de-DE');const F='font-family="Georgia, \'Times New Roman\', serif"';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1123 794" width="1123" height="794">
+  <rect width="1123" height="794" fill="#fffdf7"/><rect x="26" y="26" width="1071" height="742" fill="none" stroke="#1f3a93" stroke-width="7"/><rect x="42" y="42" width="1039" height="710" fill="none" stroke="#1f3a93" stroke-width="1.5"/>
+  ${[[42,42],[1081,42],[42,752],[1081,752]].map(([x,y])=>`<rect x="${x-9}" y="${y-9}" width="18" height="18" fill="#c62f2a" transform="rotate(45 ${x} ${y})"/>`).join('')}
+  <text x="561" y="138" text-anchor="middle" ${F} font-size="80" font-weight="700" fill="#1f3a93" letter-spacing="2">Urkunde</text>
+  <text x="561" y="184" text-anchor="middle" ${F} font-size="22" fill="#56627f">Übungsblatt „Vorrangregeln bei Termen“</text>
+  <text x="561" y="262" text-anchor="middle" ${F} font-size="46" font-style="italic" fill="#18233f">${esc(d.name||'Name')}</text>
+  <line x1="300" x2="823" y1="282" y2="282" stroke="#9aa6c2" stroke-width="1.5"/>
+  <g transform="translate(250 482) scale(1.35)">${icon(d.lv.k)}</g>
+  <text x="250" y="664" text-anchor="middle" ${F} font-size="30" font-weight="700" fill="${d.lv.c}">${d.lv.t}</text>
+  ${rows.map((r,i)=>`<text x="470" y="${372+i*52}" ${F} font-size="25" fill="#18233f">${r[0]}</text><text x="1000" y="${372+i*52}" text-anchor="end" ${F} font-size="25" font-weight="700" fill="#18233f">${esc(r[1])}</text><line x1="470" x2="1000" y1="${386+i*52}" y2="${386+i*52}" stroke="#d6dcea"/>`).join('')}
+  <text x="470" y="700" ${F} font-size="20" fill="#56627f">Datum: ${date}</text>
+  <line x1="760" x2="1000" y1="690" y2="690" stroke="#9aa6c2"/><text x="880" y="714" text-anchor="middle" ${F} font-size="16" fill="#56627f">Unterschrift</text></svg>`}
+function certPanel(){const d=stats();const open=d.n-d.done;
+  return `<h2>Urkunde</h2><p class="desc">${open?`Du hast noch ${open} von ${d.n} Aufgaben offen. Die Urkunde zeigt deinen aktuellen Stand.`:'Alle Aufgaben sind bearbeitet. Glückwunsch!'}</p>
+  <div class="cert">${certSVG(d)}<div class="side">
+   ${d.name?'':'<p class="fb bad" style="margin:0">Trage oben deinen Namen ein, damit er auf der Urkunde steht.</p>'}
+   <div class="bars"><div><span>Punkte</span><b>${fnum(d.p)} / ${d.n}</b></div><div><span>Ergebnis</span><b>${d.lv.t}</b></div><div><span>Falsche Versuche</span><b>${S.items.reduce((a,x)=>a+x.wrong,0)}</b></div></div>
+   <p class="note">Ab 90 % Pokal (sehr gut), ab 75 % Medaille (gut), ab 50 % Olivenkranz (zufriedenstellend), darunter die Ananas.</p>
+   ${DL?'<button id="pdf">Urkunde als PDF speichern</button>':'<p class="note">Zum Abgeben: Mache einen Screenshot der Urkunde.</p>'}<p class="note" id="pdfmsg" aria-live="polite"></p></div></div>`}
+async function loadPDF(){if(window.jspdf)return window.jspdf;await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});return window.jspdf}
+async function savePDF(){const b=$('pdf'),m=$('pdfmsg');b.disabled=true;m.textContent='PDF wird erstellt …';
+  try{const d=stats();const img=new Image();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(certSVG(d));await img.decode();
+    const cv=document.createElement('canvas');cv.width=2246;cv.height=1588;const g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);g.drawImage(img,0,0,cv.width,cv.height);
+    const {jsPDF}=await loadPDF();const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});pdf.addImage(cv.toDataURL('image/jpeg',.92),'JPEG',0,0,297,210);
+    const nm=(d.name||'Schueler').replace(/[^\wÄÖÜäöüß-]+/g,'_');await DL.save({filename:`Urkunde_Vorrangregeln_${nm}.pdf`,data:pdf.output('blob')});m.textContent='Die Urkunde wurde gespeichert.'}
+  catch(e){m.textContent=e&&e.code==='declined'?'Speichern abgebrochen.':'Das Speichern hat nicht geklappt. Mache stattdessen einen Screenshot.'}
+  b.disabled=false}
+try{if(window.claude&&window.claude.use)window.claude.use('downloads').then(d=>{DL=d;if(S.tab===7)renderPanel()}).catch(()=>{})}catch(e){}
+fresh();
+}
+</script>
+</body>
+</html>
